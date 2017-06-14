@@ -25,9 +25,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity : BaseActivity() {
-    private var year : Int = 2016
-    private var month : Int = 6
-    private var day : Int = 13
+    private var year : Int? =null
+    private var month : Int? =null
+    private var day : Int ? =null
     private val TAG = "MainActivity"
     private var contentData : ArrayList<Msgs>? = null
     private  val URL = "http://blog.fanfou.com/digest/json/"
@@ -42,13 +42,14 @@ class MainActivity : BaseActivity() {
         val c : Calendar = Calendar.getInstance();
         year = c.get(Calendar.YEAR)
         month = c.get(Calendar.MONTH)
+        Log.d("---->day",c.get(Calendar.DAY_OF_MONTH).toString())
         if (c.get(Calendar.DAY_OF_MONTH)<8){
-            day = c.get(Calendar.DAY_OF_MONTH)-1
+            day = c.get(Calendar.DAY_OF_MONTH)
         }else{
             day = c.get(Calendar.DAY_OF_MONTH)
         }
-        getContentData(parseDate(year,month,day))
-        Log.d("------time",parseDate(year,month,day))
+        getContentData(parseDate(year!!,month!!,day!!))
+        Log.d("------time",parseDate(year!!,month!!,day!!))
         fab.setOnClickListener {
             val c : Calendar = Calendar.getInstance()
           val dialog : DatePickerDialog = DatePickerDialog(this@MainActivity,
@@ -61,9 +62,13 @@ class MainActivity : BaseActivity() {
                       this.month = month
                       day = dayOfMonth
                   }
-                  },year,month,day)
+                  },year!!,month!!,day!!)
+                  //设置日历上的日期范围
+            //最大取值范围
             dialog.datePicker.maxDate = c.timeInMillis
-            c.set(2015,6,13)
+            //从新定义c 给他一个小的范围
+            c.set(2016,6,13)
+            //最小的值
             dialog.datePicker.minDate = c.timeInMillis
             dialog.show()
 
