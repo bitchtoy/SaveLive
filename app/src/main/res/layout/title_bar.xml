@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/title_bar_constraintLayout"
+    android:layout_height="?attr/actionBarSize">
+
+
+</android.support.constraint.ConstraintLayout>
