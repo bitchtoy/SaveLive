@@ -83,6 +83,8 @@ class MainActivity : BaseActivity() {
            var gson = Gson()
            val data : UserData = gson.fromJson(jsonObject.toString(),UserData::class.java)
            contentData = data.msgs
+           //anko，kotlin推荐使用的使用前需要导入compile 'org.jetbrains.anko:anko-sdk15:0.8.3'
+          // compile 'org.jetbrains.anko:anko-appcompat-v7:0.8.3'
            async {
                uiThread {
                    adapter = UserMessageAdapter(this@MainActivity,contentData!!)
