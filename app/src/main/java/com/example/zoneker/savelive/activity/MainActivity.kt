@@ -44,11 +44,26 @@ class MainActivity : BaseActivity() {
         month = c.get(Calendar.MONTH)
         Log.d("---->day",c.get(Calendar.DAY_OF_MONTH).toString())
         if (c.get(Calendar.DAY_OF_MONTH)<8){
-            day = c.get(Calendar.DAY_OF_MONTH)
+            day = c.get(Calendar.DAY_OF_MONTH)-1
         }else{
             day = c.get(Calendar.DAY_OF_MONTH)
         }
         getContentData(parseDate(year!!,month!!,day!!))
+        refresh.setOnRefreshListener {
+            val c : Calendar = Calendar.getInstance();
+            year = c.get(Calendar.YEAR)
+            month = c.get(Calendar.MONTH)
+            Log.d("---->day",c.get(Calendar.DAY_OF_MONTH).toString())
+            if (c.get(Calendar.DAY_OF_MONTH)<8){
+                day = c.get(Calendar.DAY_OF_MONTH)-1
+            }else{
+                day = c.get(Calendar.DAY_OF_MONTH)
+            }
+            if (contentData!!.isNotEmpty()){
+                contentData!!.clear()
+            }
+            getContentData(parseDate(year!!,month!!,day!!))
+        }
         Log.d("------time",parseDate(year!!,month!!,day!!))
         fab.setOnClickListener {
             val c : Calendar = Calendar.getInstance()
@@ -74,28 +89,23 @@ class MainActivity : BaseActivity() {
 
         }
     }
-
-
-
     fun getContentData(data : String){
        val jsonRequest = JsonObjectRequest(Request.Method.GET,URL+data+TAIL,null,Response.Listener<JSONObject> {
            jsonObject: JSONObject ->
+         isRefresh(true)
            var gson = Gson()
            val data : UserData = gson.fromJson(jsonObject.toString(),UserData::class.java)
            contentData = data.msgs
            //anko，kotlin推荐使用的使用前需要导入compile 'org.jetbrains.anko:anko-sdk15:0.8.3'
           // compile 'org.jetbrains.anko:anko-appcompat-v7:0.8.3'
+           //异步线程
            async {
                uiThread {
                    adapter = UserMessageAdapter(this@MainActivity,contentData!!)
                    recycle!!.adapter = adapter
                }
            }
-
-
-
-
-
+           isRefresh(false)
        } ,Response.ErrorListener {
                volleyError ->
        })
@@ -111,6 +121,28 @@ class MainActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
         SingleVolley.getSingleVolley(this).cancelAll(TAG)
+    }
+//    fun initTimeData(){
+//        val c : Calendar = Calendar.getInstance();
+//        year = c.get(Calendar.YEAR)
+//        month = c.get(Calendar.MONTH)
+//        Log.d("---->day",c.get(Calendar.DAY_OF_MONTH).toString())
+//        if (c.get(Calendar.DAY_OF_MONTH)<8){
+//            day = c.get(Calendar.DAY_OF_MONTH)-1
+//        }else{
+//            day = c.get(Calendar.DAY_OF_MONTH)
+//        }
+//        if (contentData!!.isNotEmpty()){
+//            contentData!!.clear()
+//        }
+//        getContentData(parseDate(year!!,month!!,day!!))
+//    }
+    fun isRefresh(boolean : Boolean){
+        if (boolean == true){
+            refresh.isRefreshing = boolean
+        }else if (boolean == false){
+            refresh.isRefreshing = boolean
+        }
     }
 
 }
