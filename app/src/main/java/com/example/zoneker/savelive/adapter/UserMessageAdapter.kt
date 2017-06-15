@@ -6,23 +6,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.zoneker.savelive.R
-import com.example.zoneker.savelive.modle.Img
+import com.example.zoneker.savelive.interfaze.ItemListener
 import com.example.zoneker.savelive.modle.Msgs
-import com.example.zoneker.savelive.view.CircleImageView
 import kotlinx.android.synthetic.main.item_layout.view.*
-import org.jetbrains.anko.image
-import org.w3c.dom.Text
 
 /**
  * Created by Zoneker on 2017/6/13.
  */
 class UserMessageAdapter(val ctx : Context,val list: ArrayList<Msgs>) : RecyclerView.Adapter<UserMessageAdapter.UserHolder>() {
-     var inflater : LayoutInflater
+    private var inflater : LayoutInflater
+    private var itemListener : ItemListener? =null
     init {
         inflater = LayoutInflater.from(ctx)
     }
@@ -46,15 +41,15 @@ class UserMessageAdapter(val ctx : Context,val list: ArrayList<Msgs>) : Recycler
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): UserHolder {
         var view : View = inflater.inflate(R.layout.item_layout, null)
-        var holder = UserHolder(view)
+        var holder = UserHolder(view,itemListener!!)
         return holder
     }
 
 
-    class UserHolder(itemView : View) : RecyclerView.ViewHolder(itemView),View.OnClickListener{
+    class UserHolder(itemView : View,val itemListener : ItemListener) : RecyclerView.ViewHolder(itemView),View.OnClickListener{
         private var card_view : CardView
-        override fun onClick(v: View?) {
-
+        override fun onClick(v: View) {
+            itemListener.itemListener(v,position)
         }
 
         init {
@@ -63,7 +58,8 @@ class UserMessageAdapter(val ctx : Context,val list: ArrayList<Msgs>) : Recycler
             card_view.setBackgroundResource(R.drawable.angler_bg)
         }
 
-
-
+    }
+    fun setItemListener(listener : ItemListener){
+        this.itemListener = listener
     }
 }
